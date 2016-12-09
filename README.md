@@ -12,6 +12,7 @@ url-tail
   Script needs `curl` to be installed. Many Linux distributions as well as Mac OS X already have curl installed.
 
   Just download `url-tail.sh`, chmod, then use it.
+
     sudo curl -o /usr/bin/url-tail -s https://raw.githubusercontent.com/micmejia/url-tail/master/script/src/url-tail.sh
     sudo chmod +x /usr/bin/url-tail
 

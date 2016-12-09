@@ -1,8 +1,11 @@
 #!/bin/bash
 
 if [ $# -lt 1 ]; then
+	echo
 	echo "Syntax: url-tail <URL> [<starting_tail_offset_in_bytes> | -1] [<update_interval_in_secs>] [<curl_options>...]"
-	echo "if <starting_tail_offset_in_bytes> is -1, all contents of the file will be initially fetched."
+	echo
+	echo "    if <starting_tail_offset_in_bytes> is -1, all contents of the file will be initially fetched."
+	echo
 	exit 1
 fi
 
@@ -39,8 +42,8 @@ fi
 
 function check_non_200_response() {
 	url=$1
-	ret=`$curl_exec -s -I -X HEAD $url`
-	status=`echo $ret | head -n 1 | cut -d$' ' -f2`
+	ret=`$curl_exec -s -I -X HEAD $url | head -n 1`
+	status=`echo $ret | cut -d$' ' -f2`
 	if [ "$status" -ne 200 ]; then
 		echo $ret
 		exit 1
@@ -78,6 +81,7 @@ function print_tail() {
 check_non_200_response $url
 check_ranges_support $url
 ranges_support=$?
+
 
 if [ $ranges_support -eq 0 ]; then
 	echo "Ranges are nor supported by the server"
