@@ -43,6 +43,10 @@ fi
 function check_non_200_response() {
 	url=$1
 	ret=`$curl_exec -s -I -X HEAD $url | head -n 1`
+	if [ -z "$ret" ]; then
+		echo Connection error.
+		exit 1
+	fi
 	status=`echo $ret | cut -d$' ' -f2`
 	if [ "$status" -ne 200 ]; then
 		echo $ret
@@ -53,7 +57,6 @@ function check_non_200_response() {
 function check_ranges_support() {
 	url=$1
 	ret=`$curl_exec -s -I -X HEAD $url | grep "Accept-Ranges: bytes"`
-
 	if [ -z "$ret" ]; then
 		echo
 	else
@@ -65,7 +68,11 @@ function get_length() {
 
 	url=$1
 	ret=`$curl_exec -s -I -X HEAD $url | awk '/Content-Length:/ {print $2}'`
-	echo $ret | sed 's/[^0-9]*//g'
+	if [ -z "$ret" ]; then
+		echo
+	else
+		echo $ret | sed 's/[^0-9]*//g'
+	fi
 }
 
 function print_tail() {
@@ -100,7 +107,10 @@ fi
 
 until [ "$off" -gt "$len" ]; do
 	len=`get_length $url`
-
+	if [ -z "$len" ]; then
+		echo Connection error.
+		exit 1
+	fi
 	if [ "$off" -eq "$len" ]; then
 		sleep $update_interval_in_secs
 	else
